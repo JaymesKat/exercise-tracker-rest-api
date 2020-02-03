@@ -4,6 +4,7 @@ const UserModel = require('./user.js')
 module.exports.create = async (user) => {
     if (!user)
         throw new Error('Missing user details');
+  
     const newUser = new UserModel({
       username: user.username,
       count: user.count,
@@ -17,6 +18,6 @@ module.exports.getAll = async () => {
 }
 
 module.exports.findById = async (id) => {
-  return await UserModel.find()
+  return await UserModel.findById(id)
 }
 
