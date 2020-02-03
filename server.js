@@ -17,12 +17,17 @@ app.use(bodyParser.json())
 const users = [];
 
 app.use(express.static('public'))
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
 app.post('/api/exercise/new-user', (req, res) => {
+  console.log(req.body)
   const { username } = req.body
+  if(!username){
+      return res.status(400).json({"message": "Username not provided"})
+  }
   console.log('username: ', username)
   const userId = uuid4().split('-')[0]
   const duplicate = users.find(user => user.username == username)
