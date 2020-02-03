@@ -50,7 +50,6 @@ app.get('/api/exercise/users', (req, res) => {
 })
 
 app.post('/api/exercise/add', (req, res) => {
-  console.log(req.body)
   const { userId, description, duration, date } = req.body
   const user = users.find(user => user._id == userId);
   
@@ -67,14 +66,18 @@ app.post('/api/exercise/add', (req, res) => {
     user.log.push(newLog)
     user.count++
     users = [...users.filter(u => u._id !== user._id), ...user]
-    
-    res.status(200).json({
+    console.log(user)
+    const resp = {
       username: user.username,
       description,
       duration: newLog.duration,
-      "_id": userId,
+      _id: userId,
       date: newLog.date
-    })
+    };
+    
+    console.log(resp)
+  
+    res.status(200).json(resp)
   } catch(err){
     res.send(err)
   }
@@ -129,6 +132,7 @@ app.use((err, req, res, next) => {
     errCode = err.status || 500
     errMessage = err.message || 'Internal Server Error'
   }
+  console.log('Error occurred', errMessage)
   res.status(errCode).type('txt')
     .send(errMessage)
 })
