@@ -7,6 +7,8 @@ const cors = require('cors')
 
 const mongoose = require('mongoose')
 
+const userRepository = require('./user-service.js')
+
 mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
 
 app.use(cors())
@@ -22,31 +24,34 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
-app.post('/api/exercise/new-user', (req, res) => {
+app.post('/api/exercise/new-user', (req, res, next) => {
   const { username } = req.body
   if(!username){
       return res.status(400).json({"message": "Username not provided"})
   }
   
-  const userId = uuid4().split('-')[0]
-  const duplicate = users.find(user => user.username.toLowerCase() == username.toLowerCase())
+  // const userId = uuid4().split('-')[0]
+  // const duplicate = users.find(user => user.username.toLowerCase() == username.toLowerCase())
   
-  if(!duplicate){
-      const user = {
-        _id: userId,
+  const duplicate = userRepository.searchByField('username', username);
+  try {
+    if(!duplicate){
+      const user = userRepository.create({
         username: username,
         count: 0,
         log: []
-      }
-      users.push(user)
+      })
       return res.status(200).json(user)
+    }
+  } catch(err){
+      next(err)
   }
   return res.send('username already taken')
 
 });
 
 app.get('/api/exercise/users', (req, res) => {
-  res.json(users);
+  res.json(userRepository.getAll());
 })
 
 app.post('/api/exercise/add', (req, res, next) => {

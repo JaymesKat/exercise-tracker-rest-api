@@ -8,7 +8,7 @@ module.exports.create = async (user) => {
     const newUser = new UserModel({
       username: user.username,
       count: user.count,
-      log: []
+      log: user.log
     })
     return await newUser.save();
 }
@@ -19,5 +19,13 @@ module.exports.getAll = async () => {
 
 module.exports.findById = async (id) => {
   return await UserModel.findById(id)
+}
+
+module.exports.searchByField = async (field, value) => {
+  await UserModel.find({ field: value });
+}
+
+module.exports.addExercise = async (user, log) => {
+  
 }
 
