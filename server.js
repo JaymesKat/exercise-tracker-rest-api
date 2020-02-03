@@ -49,8 +49,8 @@ app.get('/api/exercise/users', (req, res) => {
   res.json(users);
 })
 
-app.post('/api/exercise/add', (req, res) => {
-  console.log("Adding exercise")
+app.post('/api/exercise/add', (req, res, next) => {
+  
   const { userId, description, duration, date } = req.body
   const user = users.find(user => user._id == userId);
   
@@ -58,30 +58,27 @@ app.post('/api/exercise/add', (req, res) => {
     return res.status(404).send('unknown userId')
   }
   
+  let exerciseDate = date ? new Date(date).toDateString() : new Date().toDateString()
+  
   try{
     const newLog = {
       description,
       duration: Number(duration),
-      date: new Date(date).toDateString()
+      date: exerciseDate
     }
     user.log.push(newLog)
     user.count = user.count + 1
-    const unChangedUsers = users.filter(u => u._id != user._id)
-    users = [...unChangedUsers, ...user];
-    console.log(users)
-    const resp = {
+    users = [...users.filter(u => u._id != user._id), user];
+  
+    res.status(200).json({
       username: user.username,
       description,
       duration: newLog.duration,
       _id: userId,
       date: newLog.date
-    };
-    
-    console.log(resp)
-  
-    res.status(200).json(resp)
+    })
   } catch(err){
-    res.send(err)
+    next(err)
   }
 });
 
