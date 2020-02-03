@@ -30,7 +30,7 @@ app.post('/api/exercise/new-user', (req, res) => {
   }
   console.log('username: ', username)
   const userId = uuid4().split('-')[0]
-  const duplicate = users.find(user => user.username == username)
+  const duplicate = users.find(user => user.username.toLowerCase() == username.toLowerCase())
   
   if(!duplicate){
       const user = {
