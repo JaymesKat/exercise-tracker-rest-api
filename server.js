@@ -14,7 +14,7 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
-const users = [];
+let users = [];
 
 app.use(express.static('public'))
 
@@ -52,9 +52,8 @@ app.get('/api/exercise/users', (req, res) => {
 app.post('/api/exercise/add', (req, res) => {
   console.log(req.body)
   const { userId, description, duration, date } = req.body
-  console.log(users)
   const user = users.find(user => user._id == userId);
-  console.log(user)
+  
   if(!user){
     return res.send('unknown userId')
   }
@@ -65,14 +64,14 @@ app.post('/api/exercise/add', (req, res) => {
       duration: Number(duration),
       date: new Date(date).toDateString()
     }
-    user[0].log.push(newLog)
-    user[0].count++
-    users = [...users.filter(u => u._id !== user[0]._id), ...user[0]]
+    user.log.push(newLog)
+    user.count++
+    users = [...users.filter(u => u._id !== user._id), ...user]
     
-    res.status(200).json({
+    return res.status(200).json({
       username: user.username,
       description,
-      duration,
+      duration: Number(duration),
       _id: userId,
       date: new Date(date).toDateString
     })
@@ -86,7 +85,7 @@ app.get('/api/exercise/log', (req, res) => {
   const user = users.find(user => user._id == userId)
   
   if(!user){
-    res.send('unknown userId');
+    res.status(404).send('unknown userId');
   }
   
   if(from && Date.parse(from) !== NaN){
