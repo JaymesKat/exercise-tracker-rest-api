@@ -27,7 +27,7 @@ app.post('/api/exercise/new-user', (req, res) => {
   if(!username){
       return res.status(400).json({"message": "Username not provided"})
   }
-  console.log('username: ', username)
+  
   const userId = uuid4().split('-')[0]
   const duplicate = users.find(user => user.username.toLowerCase() == username.toLowerCase())
   
@@ -55,7 +55,7 @@ app.post('/api/exercise/add', (req, res) => {
   const user = users.find(user => user._id == userId);
   
   if(!user){
-    return res.send('unknown userId')
+    return res.status(404).send('unknown userId')
   }
   
   try{
@@ -68,12 +68,12 @@ app.post('/api/exercise/add', (req, res) => {
     user.count++
     users = [...users.filter(u => u._id !== user._id), ...user]
     
-    return res.status(200).json({
+    res.status(200).json({
       username: user.username,
       description,
-      duration: Number(duration),
-      _id: userId,
-      date: new Date(date).toDateString
+      duration: newLog.duration,
+      "_id": userId,
+      date: newLog.date
     })
   } catch(err){
     res.send(err)
