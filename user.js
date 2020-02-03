@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Order = require('./order');
 
 const userSchema = mongoose.Schema({
   username: { type: String, required: true },
@@ -8,8 +7,8 @@ const userSchema = mongoose.Schema({
     items: [
       {
         description: { type: String },
-        duration: { type: Number }
-        date: ""
+        duration: { type: Number },
+        date: { type: Date }
       }
     ]
   }
