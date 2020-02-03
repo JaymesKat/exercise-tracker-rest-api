@@ -23,13 +23,14 @@ app.get('/', (req, res) => {
 
 app.post('/api/exercise/new-user', (req, res) => {
   const { username } = req.body
+  console.log('username: ', username)
   const userId = uuid4().split('-')[0]
-  const duplicate = users.find(user => user._id == userId)
+  const duplicate = users.find(user => user.username == username)
   
   if(!duplicate){
       const user = {
         _id: userId,
-        username,
+        username: username,
         count: 0,
         log: []
       }
