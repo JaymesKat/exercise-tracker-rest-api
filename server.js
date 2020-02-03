@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4')
+const uuid4 = require('uuid/v4')
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -6,7 +6,8 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const mongoose = require('mongoose')
-mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
+
+//mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
 
 app.use(cors())
 
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
 
 app.post('/api/exercise/new-user', (req, res) => {
   const { username } = req.body
-  const userId = new uuid().split('-')[0]
+  const userId = uuid4().split('-')[0]
   const duplicate = users.find(user => user._id == userId)
   
   if(!duplicate){
