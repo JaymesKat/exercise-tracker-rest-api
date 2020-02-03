@@ -1,3 +1,4 @@
+'use strict'
 
 const UserModel = require('./user.js')
 
@@ -17,7 +18,7 @@ module.exports.getAll = async () => {
   return await UserModel.find()
 }
 
-module.exports.findById = async (id) => {
+module.exports.findById = async id => {
   return await UserModel.findById(id)
 }
 
