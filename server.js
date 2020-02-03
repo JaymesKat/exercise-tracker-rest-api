@@ -50,6 +50,7 @@ app.get('/api/exercise/users', (req, res) => {
 })
 
 app.post('/api/exercise/add', (req, res) => {
+  console.log("Adding exercise")
   const { userId, description, duration, date } = req.body
   const user = users.find(user => user._id == userId);
   
@@ -64,9 +65,10 @@ app.post('/api/exercise/add', (req, res) => {
       date: new Date(date).toDateString()
     }
     user.log.push(newLog)
-    user.count++
-    users = [...users.filter(u => u._id !== user._id), ...user]
-    console.log(user)
+    user.count = user.count + 1
+    const unChangedUsers = users.filter(u => u._id != user._id)
+    users = [...unChangedUsers, ...user];
+    console.log(users)
     const resp = {
       username: user.username,
       description,
