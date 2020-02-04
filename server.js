@@ -55,11 +55,13 @@ app.post('/api/exercise/add', (req, res, next) => {
   
   const { userId, description, duration, date } = req.body
   
+  let user;
   userRepository.findById(userId)
-    .then(user => {
-      if(!user){
+    .then(result => {
+      if(!result){
         return res.status(404).send('unknown userId')
       }
+      user = result;
   });
   
   let exerciseDate = date ? new Date(date).toDateString() : new Date().toDateString()
@@ -70,14 +72,13 @@ app.post('/api/exercise/add', (req, res, next) => {
       date: exerciseDate
     }
     
-    userRepository.addExercise(newLog)
-      .then(user => {
-        console.log(user)
+    userRepository.addExercise(user, newLog)
+      .then(savedUser => {
         res.status(200).json({
-          username: user.username,
-          description,
+          username: savedUser.username,
+          description: newLog.description,
           duration: newLog.duration,
-          _id: userId,
+          _id: savedUser._id.toString(),
           date: newLog.date
         })
       })

@@ -25,10 +25,10 @@ module.exports.getAll = () => {
 }
 
 module.exports.findById = id => {
-  let user;
-  return UserModel.findById(id).then(user => {
-    return user;
-  }).catch(err => console.log(err));
+  return UserModel.findById(id)
+    .then(user => {
+      return user;
+    }).catch(err => console.log(err));
 }
 
 module.exports.findByUsername = (value) => {
@@ -40,7 +40,8 @@ module.exports.findByUsername = (value) => {
 }
 
 module.exports.addExercise = (user, log) => {
-  user.push(log);
+  console.log(user.log)
+  user.log.push(log);
   user.count++
   
   return user.save()
