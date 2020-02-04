@@ -1,3 +1,5 @@
+'use strict';
+
 const UserModel = require('./user.js')
 
 module.exports.create = (user) => {
@@ -22,30 +24,29 @@ module.exports.create = (user) => {
 
 module.exports.getAll = () => {
   let users;
-  UserModel.find().then(result => {
-    users = result;
+  UserModel.find(function(err, results) {
+    users = results.map(u => ({_id: u._id, count: u.count, log: u.log}));
   })
   .catch(err => console.log(err))
-  return users;
+  console.log(users)
+  return users
 }
 
 module.exports.findById = id => {
   let user;
-  UserModel.findById(id).then(result => {
+  UserModel.findById(id, function(err, result) {
     user = result;
-  }).catch(err => console.log(err));
+  })
   return user;
 }
 
 module.exports.searchByField = (field, value) => {
   let users;
-  UserModel.find({ field: value })
-    .then(results => {
-      users = results;
-      console.log(results);
-      return results;
-    })
-  .catch(err => console.log(err));
+  console.log(field, '--', value)
+  UserModel.find({ field: value }, function(err, data){
+    console.log(data);
+    users = data;
+  })
   return users;
 }
 
