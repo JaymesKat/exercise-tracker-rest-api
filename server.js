@@ -99,7 +99,7 @@ app.get('/api/exercise/log', (req, res) => {
       }
 
       if(to && Date.parse(to) !== NaN){
-        user.log = user.log.filter(log => new Date(log.date) < new Date(from))
+        user.log = user.log.filter(log => new Date(log.date) < new Date(to))
         user.count = user.log.length
         user.to = Date.parse(to).toDateString
       }
