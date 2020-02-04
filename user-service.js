@@ -40,8 +40,9 @@ module.exports.findByUsername = (value) => {
 }
 
 module.exports.addExercise = (user, log) => {
-  const log = []
-  user.log.push(log);
+  console.log(user)
+  const updatedLog = [...user.log, log]
+  user.log = updatedLog
   user.count++
   
   return user.save()
