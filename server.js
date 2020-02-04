@@ -30,7 +30,7 @@ app.post('/api/exercise/new-user', (req, res, next) => {
       return res.status(400).json({"message": "Username not provided"})
   }
   
-  userRepository.searchByField('username', username)
+  userRepository.findByUsername(username)
     .then(duplicate => {
       if(duplicate.length <= 0){
          userRepository.create({ username: username, count: 0, log: []})
@@ -54,34 +54,34 @@ app.get('/api/exercise/users', (req, res) => {
 app.post('/api/exercise/add', (req, res, next) => {
   
   const { userId, description, duration, date } = req.body
-  const user = users.find(user => user._id == userId);
   
-  if(!user){
-    return res.status(404).send('unknown userId')
-  }
+  userRepository.findById(userId)
+    .then(user => {
+      if(!user){
+        return res.status(404).send('unknown userId')
+      }
+  });
   
   let exerciseDate = date ? new Date(date).toDateString() : new Date().toDateString()
   
-  try{
     const newLog = {
       description,
       duration: Number(duration),
       date: exerciseDate
     }
-    user.log.push(newLog)
-    user.count = user.count + 1
-    users = [...users.filter(u => u._id != user._id), user];
-  
-    res.status(200).json({
-      username: user.username,
-      description,
-      duration: newLog.duration,
-      _id: userId,
-      date: newLog.date
-    })
-  } catch(err){
-    next(err)
-  }
+    
+    userRepository.addExercise(newLog)
+      .then(user => {
+        console.log(user)
+        res.status(200).json({
+          username: user.username,
+          description,
+          duration: newLog.duration,
+          _id: userId,
+          date: newLog.date
+        })
+      })
+      .catch(err => console.log(err))
 });
 
 app.get('/api/exercise/log', (req, res) => {
