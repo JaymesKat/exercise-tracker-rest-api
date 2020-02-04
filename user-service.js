@@ -1,8 +1,6 @@
-'use strict'
-
 const UserModel = require('./user.js')
 
-module.exports.create = async (user) => {
+module.exports.create = (user) => {
     if (!user)
         throw new Error('Missing user details');
   
@@ -11,22 +9,22 @@ module.exports.create = async (user) => {
       count: user.count,
       log: user.log
     })
-    return await newUser.save();
+    return newUser.save();
 }
 
-module.exports.getAll = async () => {
-  return await UserModel.find()
+module.exports.getAll = () => {
+  return UserModel.find()
 }
 
-module.exports.findById = async id => {
-  return await UserModel.findById(id)
+module.exports.findById = id => {
+  return UserModel.findById(id)
 }
 
-module.exports.searchByField = async (field, value) => {
-  await UserModel.find({ field: value });
+module.exports.searchByField = (field, value) => {
+  return UserModel.find({ field: value });
 }
 
-module.exports.addExercise = async (user, log) => {
+module.exports.addExercise = (user, log) => {
   
 }
 
