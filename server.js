@@ -56,8 +56,8 @@ app.post('/api/exercise/add', (req, res, next) => {
   const { userId, description, duration, date } = req.body
   
   userRepository.findById(userId)
-    .then(result => {
-      if(!result){
+    .then(user => {
+      if(!user){
         return res.status(404).send('unknown userId')
       }
     
@@ -85,30 +85,37 @@ app.post('/api/exercise/add', (req, res, next) => {
 
 app.get('/api/exercise/log', (req, res) => {
   const { userId, from, to, limit } = req.query
-  const user = users.find(user => user._id == userId)
   
-  if(!user){
-    res.status(404).send('unknown userId');
-  }
-  
-  if(from && Date.parse(from) !== NaN){
-    user.log = user.log.filter(log => new Date(log.date) > new Date(from))
-    user.count = user.log.length
-    user.from = Date.parse(from).toDateString
-  }
-  
-  if(to && Date.parse(to) !== NaN){
-    user.log = user.log.filter(log => new Date(log.date) < new Date(from))
-    user.count = user.log.length
-    user.to = Date.parse(to).toDateString
-  }
-  
-  if(limit){
-    user.log = user.log.slice(0, limit)
-    user.count = user.log.length
-  }
-  
-  res.json(user)
+  userRepository.findById(userId)
+    .then(user => {
+      if(!user){
+        res.status(404).send('unknown userId');
+      }
+
+      if(from && Date.parse(from) !== NaN){
+        user.log = user.log.filter(log => new Date(log.date) > new Date(from))
+        user.count = user.log.length
+        user.from = Date.parse(from).toDateString
+      }
+
+      if(to && Date.parse(to) !== NaN){
+        user.log = user.log.filter(log => new Date(log.date) < new Date(from))
+        user.count = user.log.length
+        user.to = Date.parse(to).toDateString
+      }
+
+      if(limit){
+        user.log = user.log.slice(0, limit)
+        user.count = user.log.length
+      }
+
+      res.json({
+        username: user.username,
+        count: user.count,
+        _id: user._id,
+        log: user.log.map(log => ({ description: log.description, duration: log.duration, date: new Date(log.date).toDateString() }))
+      })
+  })
   
 });
 
