@@ -30,29 +30,27 @@ app.post('/api/exercise/new-user', (req, res, next) => {
       return res.status(400).json({"message": "Username not provided"})
   }
   
-  try {
-    const duplicate = userRepository.searchByField('username', username)
-    console.log(duplicate)
-    
+  userRepository.searchByField('username', username)
+    .then(duplicate => {
     if(!duplicate){
-      const user = userRepository.create({
+      userRepository.create({
         username: username,
         count: 0,
         log: []
+      }).then(user => {
+        return res.status(200).json(user)
       })
-      return res.status(200).json(user)
     }
-  } catch(err){
-      next(err)
-  }
+
   return res.send('username already taken')
+  }).catch(err => console.log(err))
 
 });
 
 app.get('/api/exercise/users', (req, res) => {
-  const users = userRepository.getAll()
-  console.log(users);
-  res.json(users);
+  userRepository.getAll().then(allUsers => {
+    res.json(allUsers);
+  }).catch(err => console.log(err))
 })
 
 app.post('/api/exercise/add', (req, res, next) => {
