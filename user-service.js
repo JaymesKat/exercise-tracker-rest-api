@@ -12,9 +12,11 @@ module.exports.create = (user) => {
     let result;
     newUser.save().then(
     userRes => { 
+      return userRes;
       result = userRes;
     })
     .catch(err => console.log(err));
+    console.log(result);
     return result;
 }
 
@@ -40,6 +42,8 @@ module.exports.searchByField = (field, value) => {
   UserModel.find({ field: value })
     .then(results => {
       users = results;
+      console.log(results);
+      return results;
     })
   .catch(err => console.log(err));
   return users;

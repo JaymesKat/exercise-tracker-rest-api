@@ -31,8 +31,9 @@ app.post('/api/exercise/new-user', (req, res, next) => {
   }
   
   try {
-    const duplicate = userRepository.searchByField('username', username);
-    console.log()
+    const duplicate = userRepository.searchByField('username', username)
+    console.log(duplicate)
+    
     if(!duplicate){
       const user = userRepository.create({
         username: username,
@@ -49,7 +50,9 @@ app.post('/api/exercise/new-user', (req, res, next) => {
 });
 
 app.get('/api/exercise/users', (req, res) => {
-  res.json(userRepository.getAll());
+  const users = userRepository.getAll()
+  console.log(users);
+  res.json(users);
 })
 
 app.post('/api/exercise/add', (req, res, next) => {
