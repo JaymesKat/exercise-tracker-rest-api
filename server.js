@@ -30,11 +30,9 @@ app.post('/api/exercise/new-user', (req, res, next) => {
       return res.status(400).json({"message": "Username not provided"})
   }
   
-  // const userId = uuid4().split('-')[0]
-  // const duplicate = users.find(user => user.username.toLowerCase() == username.toLowerCase())
-  
-  const duplicate = userRepository.searchByField('username', username);
   try {
+    const duplicate = userRepository.searchByField('username', username);
+    console.log()
     if(!duplicate){
       const user = userRepository.create({
         username: username,

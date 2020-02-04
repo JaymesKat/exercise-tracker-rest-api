@@ -9,22 +9,51 @@ module.exports.create = (user) => {
       count: user.count,
       log: user.log
     })
-    return newUser.save();
+    let result;
+    newUser.save().then(
+    userRes => { 
+      result = userRes;
+    })
+    .catch(err => console.log(err));
+    return result;
 }
 
 module.exports.getAll = () => {
-  return UserModel.find()
+  let users;
+  UserModel.find().then(result => {
+    users = result;
+  })
+  .catch(err => console.log(err))
+  return users;
 }
 
 module.exports.findById = id => {
-  return UserModel.findById(id)
+  let user;
+  UserModel.findById(id).then(result => {
+    user = result;
+  }).catch(err => console.log(err));
+  return user;
 }
 
 module.exports.searchByField = (field, value) => {
-  return UserModel.find({ field: value });
+  let users;
+  UserModel.find({ field: value })
+    .then(results => {
+      users = results;
+    })
+  .catch(err => console.log(err));
+  return users;
 }
 
 module.exports.addExercise = (user, log) => {
+  user.push(log);
   
+  let savedUser;
+  
+  user.save()
+    .then(result => { savedUser = user;})
+    .catch(err => console.log(err))
+  
+  return savedUser;
 }
 
