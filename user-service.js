@@ -9,24 +9,19 @@ module.exports.create = (user) => {
       count: user.count,
       log: user.log
     })
-    let result;
-    newUser.save().then(
+    
+    return newUser.save().then(
     userRes => { 
-      return userRes;
-      result = userRes;
+      return userRes.map(u => ({
+        
+      }));
     })
     .catch(err => console.log(err));
-    console.log(result);
-    return result;
 }
 
 module.exports.getAll = () => {
-  let users;
-  return UserModel.find().then(results => {
-    return results.map(u => ({_id: u._id, count: u.count, log: u.log}));
-  })
-  .then(allUsers => {
-    return allUsers;
+  return UserModel.find().then(users => {
+    return users.map(u => ({ _id: u._id, count: u.count, log: u.log }));
   })
   .catch(err => console.log(err))
 }
@@ -40,20 +35,13 @@ module.exports.findById = id => {
 }
 
 module.exports.searchByField = (field, value) => {
-  let users;
   console.log(field, '--', value)
-  UserModel.find({ field: value }, function(err, data){
-    console.log(data);
-    users = data;
-  })
-  // UserModel.find({ field: value })
-  //   .then(results => {
-  //     console.log(results);
-  //     users = results;
-  //     return results;
-  //   })
-  // .catch(err => console.log(err));
-  return users;
+  return UserModel.find({ field: value })
+    .then(users => {
+      console.log(users)
+      return users;
+    })
+  .catch(err => console.log(err));
 }
 
 module.exports.addExercise = (user, log) => {

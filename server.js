@@ -32,18 +32,16 @@ app.post('/api/exercise/new-user', (req, res, next) => {
   
   userRepository.searchByField('username', username)
     .then(duplicate => {
-    if(!duplicate){
-      userRepository.create({
-        username: username,
-        count: 0,
-        log: []
-      }).then(user => {
-        return res.status(200).json(user)
-      })
-    }
-
-  return res.send('username already taken')
-  }).catch(err => console.log(err))
+      if(duplicate.length <= 0){
+         userRepository.create({ username: username, count: 0, log: []})
+          .then(user => {
+            res.status(200).json(user)
+          })
+      }else{
+        res.send('username already taken')
+      } 
+    })
+    .catch(err => console.log(err))
 
 });
 
